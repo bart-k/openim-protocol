@@ -602,3 +602,11 @@ message StreamMsgTips {
   repeated string packets = 4;
   bool end = 5;
 }
+
+message PictureInfo{
+  string url = 1;
+  int32 status = 2;
+  string reviewer = 3;
+  int64 reviewTime = 4;
+  string reason = 5;
+}
