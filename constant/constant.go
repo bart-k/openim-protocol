@@ -120,6 +120,8 @@ const (
 
 	StreamMsgNotification = 2300
 
+	MedicationReminderNotification = 2400
+
 	NotificationEnd = 5000
 
 	// status.
