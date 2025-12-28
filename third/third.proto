@@ -171,6 +171,21 @@ message fileURL {
   string URL = 2;
 }
 
+message AddRefReq {
+  repeated string names = 1;
+}
+message AddRefResp {}
+
+message RemoveRefReq {
+  repeated string names = 1;
+}
+message RemoveRefResp {}
+
+message GCObjectsReq {}
+message GCObjectsResp {}
+
+
+//logs
 message UploadLogsReq {
   int32 platform = 1;
   repeated fileURL fileURLs = 2;
@@ -225,6 +240,10 @@ service third {
 
   rpc FcmUpdateToken(FcmUpdateTokenReq) returns (FcmUpdateTokenResp);
   rpc SetAppBadge(SetAppBadgeReq) returns (SetAppBadgeResp);
+
+  rpc AddRef(AddRefReq) returns (AddRefResp);
+  rpc RemoveRef(RemoveRefReq) returns (RemoveRefResp);
+  rpc GCObjects(GCObjectsReq) returns (GCObjectsResp);
 
   // Logs
   rpc UploadLogs(UploadLogsReq) returns (UploadLogsResp);
