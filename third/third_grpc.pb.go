@@ -44,9 +44,10 @@ const (
 	Third_DeleteOutdatedData_FullMethodName      = "/openim.third.third/DeleteOutdatedData"
 	Third_FcmUpdateToken_FullMethodName          = "/openim.third.third/FcmUpdateToken"
 	Third_SetAppBadge_FullMethodName             = "/openim.third.third/SetAppBadge"
-	Third_AddRef_FullMethodName                  = "/openim.third.third/AddRef"
-	Third_RemoveRef_FullMethodName               = "/openim.third.third/RemoveRef"
+	Third_BindTarget_FullMethodName              = "/openim.third.third/BindTarget"
+	Third_UnbindTarget_FullMethodName            = "/openim.third.third/UnbindTarget"
 	Third_GCObjects_FullMethodName               = "/openim.third.third/GCObjects"
+	Third_GetMediaURL_FullMethodName             = "/openim.third.third/GetMediaURL"
 	Third_UploadLogs_FullMethodName              = "/openim.third.third/UploadLogs"
 	Third_DeleteLogs_FullMethodName              = "/openim.third.third/DeleteLogs"
 	Third_SearchLogs_FullMethodName              = "/openim.third.third/SearchLogs"
@@ -67,9 +68,10 @@ type ThirdClient interface {
 	DeleteOutdatedData(ctx context.Context, in *DeleteOutdatedDataReq, opts ...grpc.CallOption) (*DeleteOutdatedDataResp, error)
 	FcmUpdateToken(ctx context.Context, in *FcmUpdateTokenReq, opts ...grpc.CallOption) (*FcmUpdateTokenResp, error)
 	SetAppBadge(ctx context.Context, in *SetAppBadgeReq, opts ...grpc.CallOption) (*SetAppBadgeResp, error)
-	AddRef(ctx context.Context, in *AddRefReq, opts ...grpc.CallOption) (*AddRefResp, error)
-	RemoveRef(ctx context.Context, in *RemoveRefReq, opts ...grpc.CallOption) (*RemoveRefResp, error)
+	BindTarget(ctx context.Context, in *BindTargetReq, opts ...grpc.CallOption) (*BindTargetResp, error)
+	UnbindTarget(ctx context.Context, in *UnbindTargetReq, opts ...grpc.CallOption) (*UnbindTargetResp, error)
 	GCObjects(ctx context.Context, in *GCObjectsReq, opts ...grpc.CallOption) (*GCObjectsResp, error)
+	GetMediaURL(ctx context.Context, in *GetMediaURLReq, opts ...grpc.CallOption) (*GetMediaURLResp, error)
 	// Logs
 	UploadLogs(ctx context.Context, in *UploadLogsReq, opts ...grpc.CallOption) (*UploadLogsResp, error)
 	DeleteLogs(ctx context.Context, in *DeleteLogsReq, opts ...grpc.CallOption) (*DeleteLogsResp, error)
@@ -194,20 +196,20 @@ func (c *thirdClient) SetAppBadge(ctx context.Context, in *SetAppBadgeReq, opts 
 	return out, nil
 }
 
-func (c *thirdClient) AddRef(ctx context.Context, in *AddRefReq, opts ...grpc.CallOption) (*AddRefResp, error) {
+func (c *thirdClient) BindTarget(ctx context.Context, in *BindTargetReq, opts ...grpc.CallOption) (*BindTargetResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(AddRefResp)
-	err := c.cc.Invoke(ctx, Third_AddRef_FullMethodName, in, out, cOpts...)
+	out := new(BindTargetResp)
+	err := c.cc.Invoke(ctx, Third_BindTarget_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *thirdClient) RemoveRef(ctx context.Context, in *RemoveRefReq, opts ...grpc.CallOption) (*RemoveRefResp, error) {
+func (c *thirdClient) UnbindTarget(ctx context.Context, in *UnbindTargetReq, opts ...grpc.CallOption) (*UnbindTargetResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(RemoveRefResp)
-	err := c.cc.Invoke(ctx, Third_RemoveRef_FullMethodName, in, out, cOpts...)
+	out := new(UnbindTargetResp)
+	err := c.cc.Invoke(ctx, Third_UnbindTarget_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -218,6 +220,16 @@ func (c *thirdClient) GCObjects(ctx context.Context, in *GCObjectsReq, opts ...g
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GCObjectsResp)
 	err := c.cc.Invoke(ctx, Third_GCObjects_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *thirdClient) GetMediaURL(ctx context.Context, in *GetMediaURLReq, opts ...grpc.CallOption) (*GetMediaURLResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetMediaURLResp)
+	err := c.cc.Invoke(ctx, Third_GetMediaURL_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -269,9 +281,10 @@ type ThirdServer interface {
 	DeleteOutdatedData(context.Context, *DeleteOutdatedDataReq) (*DeleteOutdatedDataResp, error)
 	FcmUpdateToken(context.Context, *FcmUpdateTokenReq) (*FcmUpdateTokenResp, error)
 	SetAppBadge(context.Context, *SetAppBadgeReq) (*SetAppBadgeResp, error)
-	AddRef(context.Context, *AddRefReq) (*AddRefResp, error)
-	RemoveRef(context.Context, *RemoveRefReq) (*RemoveRefResp, error)
+	BindTarget(context.Context, *BindTargetReq) (*BindTargetResp, error)
+	UnbindTarget(context.Context, *UnbindTargetReq) (*UnbindTargetResp, error)
 	GCObjects(context.Context, *GCObjectsReq) (*GCObjectsResp, error)
+	GetMediaURL(context.Context, *GetMediaURLReq) (*GetMediaURLResp, error)
 	// Logs
 	UploadLogs(context.Context, *UploadLogsReq) (*UploadLogsResp, error)
 	DeleteLogs(context.Context, *DeleteLogsReq) (*DeleteLogsResp, error)
@@ -319,14 +332,17 @@ func (UnimplementedThirdServer) FcmUpdateToken(context.Context, *FcmUpdateTokenR
 func (UnimplementedThirdServer) SetAppBadge(context.Context, *SetAppBadgeReq) (*SetAppBadgeResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetAppBadge not implemented")
 }
-func (UnimplementedThirdServer) AddRef(context.Context, *AddRefReq) (*AddRefResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddRef not implemented")
+func (UnimplementedThirdServer) BindTarget(context.Context, *BindTargetReq) (*BindTargetResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BindTarget not implemented")
 }
-func (UnimplementedThirdServer) RemoveRef(context.Context, *RemoveRefReq) (*RemoveRefResp, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RemoveRef not implemented")
+func (UnimplementedThirdServer) UnbindTarget(context.Context, *UnbindTargetReq) (*UnbindTargetResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UnbindTarget not implemented")
 }
 func (UnimplementedThirdServer) GCObjects(context.Context, *GCObjectsReq) (*GCObjectsResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GCObjects not implemented")
+}
+func (UnimplementedThirdServer) GetMediaURL(context.Context, *GetMediaURLReq) (*GetMediaURLResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMediaURL not implemented")
 }
 func (UnimplementedThirdServer) UploadLogs(context.Context, *UploadLogsReq) (*UploadLogsResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UploadLogs not implemented")
@@ -556,38 +572,38 @@ func _Third_SetAppBadge_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Third_AddRef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AddRefReq)
+func _Third_BindTarget_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BindTargetReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ThirdServer).AddRef(ctx, in)
+		return srv.(ThirdServer).BindTarget(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Third_AddRef_FullMethodName,
+		FullMethod: Third_BindTarget_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ThirdServer).AddRef(ctx, req.(*AddRefReq))
+		return srv.(ThirdServer).BindTarget(ctx, req.(*BindTargetReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Third_RemoveRef_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RemoveRefReq)
+func _Third_UnbindTarget_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UnbindTargetReq)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(ThirdServer).RemoveRef(ctx, in)
+		return srv.(ThirdServer).UnbindTarget(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Third_RemoveRef_FullMethodName,
+		FullMethod: Third_UnbindTarget_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ThirdServer).RemoveRef(ctx, req.(*RemoveRefReq))
+		return srv.(ThirdServer).UnbindTarget(ctx, req.(*UnbindTargetReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -606,6 +622,24 @@ func _Third_GCObjects_Handler(srv interface{}, ctx context.Context, dec func(int
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ThirdServer).GCObjects(ctx, req.(*GCObjectsReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Third_GetMediaURL_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMediaURLReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ThirdServer).GetMediaURL(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Third_GetMediaURL_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ThirdServer).GetMediaURL(ctx, req.(*GetMediaURLReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -716,16 +750,20 @@ var Third_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Third_SetAppBadge_Handler,
 		},
 		{
-			MethodName: "AddRef",
-			Handler:    _Third_AddRef_Handler,
+			MethodName: "BindTarget",
+			Handler:    _Third_BindTarget_Handler,
 		},
 		{
-			MethodName: "RemoveRef",
-			Handler:    _Third_RemoveRef_Handler,
+			MethodName: "UnbindTarget",
+			Handler:    _Third_UnbindTarget_Handler,
 		},
 		{
 			MethodName: "GCObjects",
 			Handler:    _Third_GCObjects_Handler,
+		},
+		{
+			MethodName: "GetMediaURL",
+			Handler:    _Third_GetMediaURL_Handler,
 		},
 		{
 			MethodName: "UploadLogs",

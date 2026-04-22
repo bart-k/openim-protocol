@@ -171,19 +171,77 @@ message fileURL {
   string URL = 2;
 }
 
-message AddRefReq {
-  repeated string names = 1;
-}
-message AddRefResp {}
+enum  BindTargetType {
+  BindTargetTypeUnknown = 0;
 
-message RemoveRefReq {
-  repeated string names = 1;
+  BindTargetTypeIM   = 1; // 消息体系（dm + group 统一）
+  BindTargetTypePOST = 2; // 内容体系（动态/帖子）
+  BindTargetTypeUSER = 3; // 用户体系（头像/背景/资料）
+  BindTargetTypeOPS  = 4; // 运营/后台资源（banner/活动/广告）
+  BindTargetTypeSYS  = 5; // 系统资源（内部使用）
 }
-message RemoveRefResp {}
+
+enum IMSessionType {
+  IMSessionTypeUnknown = 0;
+
+  IMSessionTypeSingle = 1; // 私聊
+  IMSessionTypeGroup  = 2; // 群聊
+}
+
+
+message BindTargetReq {
+  repeated string mediaIds = 1;
+
+  BindTargetType targetType = 2;
+  string targetId = 3;
+  IMSessionType  sessionType = 4;
+}
+
+message BindTargetResp {}
+
+message UnbindTargetReq {
+  repeated string mediaIds = 1;
+}
+
+message UnbindTargetResp {}
 
 message GCObjectsReq {}
 message GCObjectsResp {}
 
+
+
+message MediaOpt {
+  oneof opt {
+    ImageOpt image = 1;
+    VideoOpt video = 2;
+  }
+}
+message VideoOpt {
+}
+
+message ImageOpt {
+  optional int32 width = 1;
+  optional int32 height = 2;
+
+  // fit / fill / crop
+  optional string mode = 3;
+
+  // jpg / webp / png
+ optional string format = 4;
+
+  // 1 - 100
+ optional int32 quality = 5;
+}
+
+message GetMediaURLReq {
+  string mediaId = 1;
+    // 媒体处理参数（核心）
+  MediaOpt opt = 2;
+}
+message GetMediaURLResp {
+  string url = 1;
+  int64 expireTime = 2;
+}
 
 //logs
 message UploadLogsReq {
@@ -241,9 +299,10 @@ service third {
   rpc FcmUpdateToken(FcmUpdateTokenReq) returns (FcmUpdateTokenResp);
   rpc SetAppBadge(SetAppBadgeReq) returns (SetAppBadgeResp);
 
-  rpc AddRef(AddRefReq) returns (AddRefResp);
-  rpc RemoveRef(RemoveRefReq) returns (RemoveRefResp);
+  rpc BindTarget(BindTargetReq) returns (BindTargetResp);
+  rpc UnbindTarget(UnbindTargetReq) returns (UnbindTargetResp);
   rpc GCObjects(GCObjectsReq) returns (GCObjectsResp);
+  rpc GetMediaURL(GetMediaURLReq) returns (GetMediaURLResp);
 
   // Logs
   rpc UploadLogs(UploadLogsReq) returns (UploadLogsResp);
