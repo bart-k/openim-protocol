@@ -48,6 +48,7 @@ const (
 	Third_UnbindTarget_FullMethodName            = "/openim.third.third/UnbindTarget"
 	Third_GCObjects_FullMethodName               = "/openim.third.third/GCObjects"
 	Third_GetMediaURL_FullMethodName             = "/openim.third.third/GetMediaURL"
+	Third_ListExpiredMedia_FullMethodName        = "/openim.third.third/ListExpiredMedia"
 	Third_UploadLogs_FullMethodName              = "/openim.third.third/UploadLogs"
 	Third_DeleteLogs_FullMethodName              = "/openim.third.third/DeleteLogs"
 	Third_SearchLogs_FullMethodName              = "/openim.third.third/SearchLogs"
@@ -72,6 +73,7 @@ type ThirdClient interface {
 	UnbindTarget(ctx context.Context, in *UnbindTargetReq, opts ...grpc.CallOption) (*UnbindTargetResp, error)
 	GCObjects(ctx context.Context, in *GCObjectsReq, opts ...grpc.CallOption) (*GCObjectsResp, error)
 	GetMediaURL(ctx context.Context, in *GetMediaURLReq, opts ...grpc.CallOption) (*GetMediaURLResp, error)
+	ListExpiredMedia(ctx context.Context, in *ListExpiredMediaReq, opts ...grpc.CallOption) (*ListExpiredMediaResp, error)
 	// Logs
 	UploadLogs(ctx context.Context, in *UploadLogsReq, opts ...grpc.CallOption) (*UploadLogsResp, error)
 	DeleteLogs(ctx context.Context, in *DeleteLogsReq, opts ...grpc.CallOption) (*DeleteLogsResp, error)
@@ -236,6 +238,16 @@ func (c *thirdClient) GetMediaURL(ctx context.Context, in *GetMediaURLReq, opts 
 	return out, nil
 }
 
+func (c *thirdClient) ListExpiredMedia(ctx context.Context, in *ListExpiredMediaReq, opts ...grpc.CallOption) (*ListExpiredMediaResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListExpiredMediaResp)
+	err := c.cc.Invoke(ctx, Third_ListExpiredMedia_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *thirdClient) UploadLogs(ctx context.Context, in *UploadLogsReq, opts ...grpc.CallOption) (*UploadLogsResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(UploadLogsResp)
@@ -285,6 +297,7 @@ type ThirdServer interface {
 	UnbindTarget(context.Context, *UnbindTargetReq) (*UnbindTargetResp, error)
 	GCObjects(context.Context, *GCObjectsReq) (*GCObjectsResp, error)
 	GetMediaURL(context.Context, *GetMediaURLReq) (*GetMediaURLResp, error)
+	ListExpiredMedia(context.Context, *ListExpiredMediaReq) (*ListExpiredMediaResp, error)
 	// Logs
 	UploadLogs(context.Context, *UploadLogsReq) (*UploadLogsResp, error)
 	DeleteLogs(context.Context, *DeleteLogsReq) (*DeleteLogsResp, error)
@@ -343,6 +356,9 @@ func (UnimplementedThirdServer) GCObjects(context.Context, *GCObjectsReq) (*GCOb
 }
 func (UnimplementedThirdServer) GetMediaURL(context.Context, *GetMediaURLReq) (*GetMediaURLResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMediaURL not implemented")
+}
+func (UnimplementedThirdServer) ListExpiredMedia(context.Context, *ListExpiredMediaReq) (*ListExpiredMediaResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListExpiredMedia not implemented")
 }
 func (UnimplementedThirdServer) UploadLogs(context.Context, *UploadLogsReq) (*UploadLogsResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UploadLogs not implemented")
@@ -644,6 +660,24 @@ func _Third_GetMediaURL_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Third_ListExpiredMedia_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListExpiredMediaReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ThirdServer).ListExpiredMedia(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Third_ListExpiredMedia_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ThirdServer).ListExpiredMedia(ctx, req.(*ListExpiredMediaReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Third_UploadLogs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UploadLogsReq)
 	if err := dec(in); err != nil {
@@ -764,6 +798,10 @@ var Third_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetMediaURL",
 			Handler:    _Third_GetMediaURL_Handler,
+		},
+		{
+			MethodName: "ListExpiredMedia",
+			Handler:    _Third_ListExpiredMedia_Handler,
 		},
 		{
 			MethodName: "UploadLogs",

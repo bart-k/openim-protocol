@@ -243,6 +243,14 @@ message GetMediaURLResp {
   int64 expireTime = 2;
 }
 
+message ListExpiredMediaReq{
+  int64 expireTime = 1;
+  BindTargetType targetType = 2;
+}
+message ListExpiredMediaResp {
+  repeated string mediaIds = 1;
+}
+
 //logs
 message UploadLogsReq {
   int32 platform = 1;
@@ -303,6 +311,7 @@ service third {
   rpc UnbindTarget(UnbindTargetReq) returns (UnbindTargetResp);
   rpc GCObjects(GCObjectsReq) returns (GCObjectsResp);
   rpc GetMediaURL(GetMediaURLReq) returns (GetMediaURLResp);
+  rpc ListExpiredMedia(ListExpiredMediaReq) returns (ListExpiredMediaResp);
 
   // Logs
   rpc UploadLogs(UploadLogsReq) returns (UploadLogsResp);
