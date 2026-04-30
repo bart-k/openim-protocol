@@ -179,6 +179,7 @@ enum  BindTargetType {
   BindTargetTypeUSER = 3; // 用户体系（头像/背景/资料）
   BindTargetTypeOPS  = 4; // 运营/后台资源（banner/活动/广告）
   BindTargetTypeSYS  = 5; // 系统资源（内部使用）
+  BindTargetTypeREPORT = 6; //  举报证据（截图/图片/录屏等）
 }
 
 enum IMSessionType {
