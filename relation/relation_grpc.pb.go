@@ -44,6 +44,7 @@ const (
 	Friend_IsFriend_FullMethodName                       = "/openim.relation.friend/isFriend"
 	Friend_IsBlack_FullMethodName                        = "/openim.relation.friend/isBlack"
 	Friend_GetPaginationBlacks_FullMethodName            = "/openim.relation.friend/getPaginationBlacks"
+	Friend_GetBeBlacks_FullMethodName                    = "/openim.relation.friend/getBeBlacks"
 	Friend_GetSpecifiedBlacks_FullMethodName             = "/openim.relation.friend/GetSpecifiedBlacks"
 	Friend_DeleteFriend_FullMethodName                   = "/openim.relation.friend/deleteFriend"
 	Friend_RespondFriendApply_FullMethodName             = "/openim.relation.friend/respondFriendApply"
@@ -87,6 +88,8 @@ type FriendClient interface {
 	IsBlack(ctx context.Context, in *IsBlackReq, opts ...grpc.CallOption) (*IsBlackResp, error)
 	// Get blacklist
 	GetPaginationBlacks(ctx context.Context, in *GetPaginationBlacksReq, opts ...grpc.CallOption) (*GetPaginationBlacksResp, error)
+	// 获取拉黑我的用户名单
+	GetBeBlacks(ctx context.Context, in *GetBeBlacksReq, opts ...grpc.CallOption) (*GetBeBlacksResp, error)
 	// Get specified blacklist
 	GetSpecifiedBlacks(ctx context.Context, in *GetSpecifiedBlacksReq, opts ...grpc.CallOption) (*GetSpecifiedBlacksResp, error)
 	// Delete friend
@@ -228,6 +231,16 @@ func (c *friendClient) GetPaginationBlacks(ctx context.Context, in *GetPaginatio
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetPaginationBlacksResp)
 	err := c.cc.Invoke(ctx, Friend_GetPaginationBlacks_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *friendClient) GetBeBlacks(ctx context.Context, in *GetBeBlacksReq, opts ...grpc.CallOption) (*GetBeBlacksResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetBeBlacksResp)
+	err := c.cc.Invoke(ctx, Friend_GetBeBlacks_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -410,6 +423,8 @@ type FriendServer interface {
 	IsBlack(context.Context, *IsBlackReq) (*IsBlackResp, error)
 	// Get blacklist
 	GetPaginationBlacks(context.Context, *GetPaginationBlacksReq) (*GetPaginationBlacksResp, error)
+	// 获取拉黑我的用户名单
+	GetBeBlacks(context.Context, *GetBeBlacksReq) (*GetBeBlacksResp, error)
 	// Get specified blacklist
 	GetSpecifiedBlacks(context.Context, *GetSpecifiedBlacksReq) (*GetSpecifiedBlacksResp, error)
 	// Delete friend
@@ -479,6 +494,9 @@ func (UnimplementedFriendServer) IsBlack(context.Context, *IsBlackReq) (*IsBlack
 }
 func (UnimplementedFriendServer) GetPaginationBlacks(context.Context, *GetPaginationBlacksReq) (*GetPaginationBlacksResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPaginationBlacks not implemented")
+}
+func (UnimplementedFriendServer) GetBeBlacks(context.Context, *GetBeBlacksReq) (*GetBeBlacksResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBeBlacks not implemented")
 }
 func (UnimplementedFriendServer) GetSpecifiedBlacks(context.Context, *GetSpecifiedBlacksReq) (*GetSpecifiedBlacksResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetSpecifiedBlacks not implemented")
@@ -740,6 +758,24 @@ func _Friend_GetPaginationBlacks_Handler(srv interface{}, ctx context.Context, d
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(FriendServer).GetPaginationBlacks(ctx, req.(*GetPaginationBlacksReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Friend_GetBeBlacks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetBeBlacksReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FriendServer).GetBeBlacks(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Friend_GetBeBlacks_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FriendServer).GetBeBlacks(ctx, req.(*GetBeBlacksReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1064,6 +1100,10 @@ var Friend_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "getPaginationBlacks",
 			Handler:    _Friend_GetPaginationBlacks_Handler,
+		},
+		{
+			MethodName: "getBeBlacks",
+			Handler:    _Friend_GetBeBlacks_Handler,
 		},
 		{
 			MethodName: "GetSpecifiedBlacks",
